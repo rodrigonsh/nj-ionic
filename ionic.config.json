@@ -1,0 +1,7 @@
+{
+  "name": "NovaJerusalem",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
