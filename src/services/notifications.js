@@ -6,6 +6,7 @@ import { getIdToken } from 'firebase/auth'
 import { getToken, onMessage } from 'firebase/messaging';
 
 import api from '@/services/api';
+import router from '@/router';
 
 const addListeners = async () => {
 
@@ -37,9 +38,23 @@ const addListeners = async () => {
 
     onMessage(messaging, (payload) => {
       console.log('Message received. ', payload);
-      //const img = "/to-do-notifications/img/icon-128.png";
-      //const text = `HEY! Your task "${title}" is now overdue.`;
-      //const notification = new Notification("To do list", { body: text, icon: img });
+      const img = "/to-do-notifications/img/icon-128.png";
+      const text = `HEY! ${payload.notification.title} - ${payload.notification.body}`;
+      const notification = new Notification("To do list", { body: text, icon: img, data: payload.data});
+
+      notification.addEventListener('click', (e) => {
+        // get type and uuid from payload
+        let data = e.target.data
+
+        if ( data.type == 'help-request' )
+        {
+          console.log('Help request notification clicked:', data.uuid);
+          router.push('/help-request/' + data.uuid);
+        }
+
+      })
+
+
     });
 
   }
@@ -110,7 +125,14 @@ const getFCMToken = async () => {
       api.sendFCMToken(currentToken)
     })
     .catch((err) => {
+
       console.error('An error occurred while retrieving token. ', err);
+
+      // retry?
+      setTimeout(() => {
+        getFCMToken();
+      }, 5000); // 5 seconds
+
     })
 
 }

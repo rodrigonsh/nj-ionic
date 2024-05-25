@@ -44,6 +44,14 @@ const api =
         return axios.post( path , obj)
     },
 
+    letMeIn(door)
+    {
+        let obj = {}
+        obj['door'] = door
+        let path = api.getPath('letMeIn')
+        return axios.post( path , obj)
+    },
+
     updateProfile(obj)
     {
         let path = api.getPath('updateProfile')
@@ -109,7 +117,13 @@ const api =
         let obj = { token: token }
         let res = await axios.post( path , obj)
         console.log('sendFCMToken', res)
-    }
+    },
+
+    getHelpRequest(uuid)
+    {
+        let path = api.getPath('getHelpRequest/'+uuid)
+        return axios.get( path )
+    },
 
 }
 

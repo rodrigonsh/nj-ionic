@@ -192,11 +192,22 @@ import 'swiper/css';
 import '@ionic/vue/css/ionic-swiper.css';
 
 import router from '@/router';
-
+import store from '@/services/store';
 import api from '@/services/api';
+
+if (store.state.backUrl != null)
+{
+  console.log('backUrl', store.state.backUrl);
+  setTimeout(() => {
+    router.replace(store.state.backUrl);
+    store.commit('setBackUrl', null);
+  }, 1000);
+  
+}
 
 const openDoor = (door: string) => {
   console.log(door);
+  api.letMeIn(door);
   router.push(`/door/${door}`);
 }
 

@@ -21,6 +21,7 @@ const store = createStore({
     confirmationResult: null,
     confession: null,
     need: null,
+    backUrl: null,
   },
 
   mutations:
@@ -61,6 +62,10 @@ const store = createStore({
       state.user.familySize = payload
     },
 
+    setBackUrl(state, payload) {
+      state.backUrl = payload
+    }
+
   },
 
   actions:
@@ -94,8 +99,8 @@ const unsub = onAuthStateChanged(auth, (user) => {
           router.replace('/login/dados')
           return
         }
-        else {
-          console.log(res.data)
+        else 
+        {
           api.setBearer(res.data.token)
           router.replace('/doors')
         }
