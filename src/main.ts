@@ -54,3 +54,18 @@ router.isReady().then(() => {
   app.mount('#app');
 
 });
+
+
+// Listen to service worker messages sent via postMessage()
+navigator.serviceWorker.addEventListener('message', (event) => {
+  if (!event.data.action) {
+    return
+  }
+
+  switch (event.data.action) {
+    case 'redirect-from-notificationclick':
+      window.location.href = event.data.url
+      break
+    // no default
+  }
+})

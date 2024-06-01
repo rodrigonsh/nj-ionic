@@ -37,10 +37,11 @@ const addListeners = async () => {
     console.log('configurando onMessage...')
 
     onMessage(messaging, (payload) => {
+    
       console.log('Message received. ', payload);
-      const img = "/to-do-notifications/img/icon-128.png";
-      const text = `HEY! ${payload.notification.title} - ${payload.notification.body}`;
-      const notification = new Notification("To do list", { body: text, icon: img, data: payload.data});
+    
+      const img = "/images/logo.png";
+      const notification = new Notification(payload.notification.title, { body: payload.notification.body, icon: img, data: payload.data});
 
       notification.addEventListener('click', (e) => {
         // get type and uuid from payload

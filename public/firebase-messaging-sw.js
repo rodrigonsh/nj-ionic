@@ -27,13 +27,62 @@ messaging.onBackgroundMessage((payload) => {
     payload
   );
   // Customize notification here
-  const notificationTitle = 'Background Message Title';
+  const notificationTitle = payload.notification.title;
   const notificationOptions = {
-    body: 'Background Message body.',
-    icon: '/firebase-logo.png',
-    data:payload.data
+    body: payload.notification.body,
+    icon: '/img/logo.png',
+    data: payload.data
   };
 
-  
-  self.registration.showNotification(notificationTitle, notificationOptions);
+  self.addEventListener('notificationclick', (event) => {
+
+    //console.log('sw notificationClick', event)
+
+    const clickedNotification = event.notification;
+    clickedNotification.close();
+
+    event.waitUntil(
+      clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (clientList) {
+
+        let url = "/"
+
+        if (clickedNotification.data.type == 'help-request') {
+          //console.log('Help request notification clicked:');
+          url = '/help-request/' + clickedNotification.data.uuid
+        }
+
+        // Se a janela do seu aplicativo já estiver aberta, apenas foca nela
+        for (let i = 0; i < clientList.length; i++) {
+
+          const client = clientList[i];
+          console.log('sw', i, client.url)
+
+          client.postMessage({
+            action: 'redirect-from-notificationclick',
+            url: url,
+          })
+
+          client.focus()
+
+          return
+
+
+        }
+        // Se não, abre uma nova janela
+        if (clients.openWindow) {
+          return clients.openWindow(url);
+        }
+      })
+    );
+
+
+  });
+
+  self.registration
+    .showNotification(notificationTitle, notificationOptions)
+    .then(function (notification) {
+      notification.onclick = function () {
+
+      }
+    });
 });

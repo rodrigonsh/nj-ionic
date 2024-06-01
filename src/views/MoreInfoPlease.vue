@@ -68,7 +68,8 @@ const setConfession = (value) => {
 
 const prosseguir = () => {
   console.log('prosseguir', store );
-  api.requestHelp();
+  setTimeout(api.requestHelp, 2000)
+  //api.requestHelp();
 }
 
 console.log('MoreInfoPlease', store );
