@@ -48,7 +48,17 @@ messaging.onBackgroundMessage((payload) => {
 
         if (clickedNotification.data.type == 'help-request') {
           //console.log('Help request notification clicked:');
+          url = '/i-want-to-help/' + clickedNotification.data.uuid
+        }
+
+        if (clickedNotification.data.type == 'help-on-the-way') {
+          //console.log('Help on the way notification clicked:');
           url = '/help-request/' + clickedNotification.data.uuid
+        }
+
+        if (clickedNotification.data.type == 'meet-your-partner') {
+          //console.log('Meet your partner notification clicked:');
+          url = '/meet-your-partner/' + clickedNotification.data.uuid
         }
 
         // Se a janela do seu aplicativo já estiver aberta, apenas foca nela

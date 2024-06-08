@@ -50,8 +50,32 @@ const addListeners = async () => {
         if ( data.type == 'help-request' )
         {
           console.log('Help request notification clicked:', data.uuid);
-          router.push('/help-request/' + data.uuid);
+          router.push('/i-want-to-help/' + data.uuid);
+          return 
         }
+
+        if ( data.type == 'help-on-the-way' )
+        {
+          console.log('Help on the way notification clicked:', data.uuid);
+          router.push('/help-request/' + data.uuid);
+          return
+        }
+
+        if ( data.type == 'meet-your-partner' )
+        {
+          console.log('Meet your partner notification clicked:', data.uuid);
+          router.push('/meet-your-partner/' + data.uuid);
+          return
+        }
+
+        if ( data.type == 'help-arrived' )
+        {
+          console.log('Help arrived notification clicked:', data.uuid);
+          router.push('/help-arrived/' + data.uuid);
+          return
+        }
+
+        
 
       })
 

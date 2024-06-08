@@ -61,17 +61,18 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import ('../views/Home.vue')
   },
 
+  // i-want-to-help/uuid
+  {
+    path: '/i-want-to-help/:uuid',
+    component: () => import ('../views/IWantToHelp.vue')
+  },
+
   // help request
   {
     path: '/help-request/:uuid',
     component: () => import ('../views/HelpRequest.vue')
   },
 
-  // i-want-to-help/uuid
-  {
-    path: '/i-want-to-help/:uuid',
-    component: () => import ('../views/IWantToHelp.vue')
-  },
 
 ]
 
