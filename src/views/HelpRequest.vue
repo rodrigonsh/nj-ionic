@@ -1,62 +1,59 @@
 <template>
   <ion-page>
-      <ion-content :fullscreen="true" class='ion-padding'>
-      
-        <h1>Temos um novo pedido de ajuda!</h1>
+    <ion-content :fullscreen="true" class="ion-padding">
+      <h1>Temos um novo pedido de ajuda!</h1>
 
-        <div v-if="loading">Carregando dados...</div>
-        
-        <div class="pedido" v-if="!loading && stillNeedHelp">
+      <div v-if="loading">Carregando dados...</div>
 
-          <h2>{{ reqData.user.name  }}</h2>
+      <div class="pedido" v-if="!loading && stillNeedHelp">
+        <h2>{{ reqData.user.name }}</h2>
 
-          <p id="basicInfo" v-if="!is_volunteer">
-            {{ reqData.user.bairro }} <br /> 
-            <strong>{{ reqData.user.localidade }}</strong>
+        <p id="basicInfo" v-if="!is_volunteer">
+          {{ reqData.user.bairro }} <br />
+          <strong>{{ reqData.user.localidade }}</strong>
+        </p>
+
+        <h2 id="helpText">Precisa de {{ helpText }}</h2>
+        <p>{{ reqData.confession }}</p>
+
+        <div v-if="is_volunteer">
+          <h3>Endereço:</h3>
+          <p>{{ reqData.user.logradouro }}, {{ reqData.user.numero }}</p>
+          <p>
+            {{ reqData.user.bairro }}, {{ reqData.user.localidade }} -
+            {{ reqData.user.uf }}
           </p>
 
-          <p id="helpText">Precisa de {{ helpText }}</p>
+          <h3>Família</h3>
+          <p v-for="faixa in family">
+            {{ faixa.label }}: <strong>{{ faixa.title }}</strong>
+          </p>
 
-          <h3>Em suas próprias palavras:</h3>
-          <p>{{ reqData.confession}}</p>      
-
-          <div v-if="is_volunteer">
-
-            <h3>Endereço:</h3>
-            <p>{{ reqData.user.logradouro }}, {{ reqData.user.numero }}</p>
-            <p>
-              {{ reqData.user.bairro  }}, {{ reqData.user.localidade }} - {{ reqData.user.uf }}
-            </p>
-            
-            <h3>Família</h3>
-            <p v-for="faixa in family">
-              {{ faixa.label }}: <strong>{{ faixa.title }}</strong>
-            </p>
-
-            <div id="buttons">
-              <ion-button shape="round" size="large">
-                <ion-icon slot="icon-only" :icon="callOutline"></ion-icon>
-              </ion-button>
-              <ion-button shape="round" size="large" color="success">
-                <ion-icon slot="icon-only" :icon="logoWhatsapp"></ion-icon>
-              </ion-button>
-            </div>
-            
+          <div id="buttons">
+            <ion-button @click="callPhone" shape="round" size="large">
+              <ion-icon slot="icon-only" :icon="callOutline"></ion-icon>
+            </ion-button>
+            <ion-button @click="callWhats" shape="round" size="large" color="success">
+              <ion-icon slot="icon-only" :icon="logoWhatsapp"></ion-icon>
+            </ion-button>
           </div>
-
-          <IonButton 
-            id="volunteerBtn"
-            color="primary" 
-            @click="volunteer" 
-            size="large" expand="block"
-          >
-          <ion-icon slot="start" :icon="handLeftOutline"></ion-icon>
-            <!-- ISA.6.8.ARA -->
-            Eis-me aqui, <br />envia-me a mim!
-          </IonButton>
-
         </div>
 
+        <IonButton
+          id="volunteerBtn"
+          color="primary"
+          @click="volunteer"
+          size="large"
+          expand="block"
+        >
+          <ion-icon slot="start" :icon="handLeftOutline"></ion-icon>
+          <span v-if="!is_volunteer">
+            <!-- ISA.6.8.ARA -->
+            Eis-me aqui, <br />envia-me a mim!
+          </span>
+          <span v-else> Confirmar </span>
+        </IonButton>
+      </div>
     </ion-content>
   </ion-page>
 </template>
@@ -68,15 +65,15 @@ import api from '@/services/api';
 import router from '@/router';
 import { useRoute } from 'vue-router'
 
-import 
-{ 
-  IonButtons, 
-  IonContent, 
+import
+{
+  IonButtons,
+  IonContent,
   IonButton,
   IonIcon,
-  IonHeader, 
-  IonMenuButton, IonPage, 
-  IonTitle, 
+  IonHeader,
+  IonMenuButton, IonPage,
+  IonTitle,
   IonToolbar,
   IonCardTitle,
   IonCardSubtitle,
@@ -93,7 +90,19 @@ import { ref, computed } from 'vue';
 const loading = ref(true);
 const stillNeedHelp = ref(true);
 const reqData = ref({
-  user: {name: 'carregando...'}
+  user: {
+    name: 'carregando...',
+    need: 'carregando...',
+    bairro: 'carregando...',
+    localidade: 'carregando...',
+    confession: 'carregando...',
+    familySize: 'carregando...',
+    logradouro: 'carregando...',
+    numero: 'carregando...',
+    uf: 'carregando...',
+    phoneNumber: 'carregando...',
+
+  },
 });
 
 // get uuid from router
@@ -136,7 +145,7 @@ const helpText = computed(() => {
   {
     case 'compras':
       return 'Alguém pra fazer compras';
-    
+
     default:
       return reqData.value.need;
   }
@@ -155,7 +164,7 @@ const family = computed( () =>
 
   for( var i=0; i < keys.length; i++ )
   {
-    
+
     let texto = 'hummmm'
     let partes = []
 
@@ -185,6 +194,19 @@ const family = computed( () =>
 
 } )
 
+const callPhone = function()
+{
+  console.log('callPhone', reqData.value.user.phoneNumber)
+  window.open('tel:' + reqData.value.user.phoneNumber, '_system')
+}
+
+const callWhats = function()
+{
+  let number = reqData.value.user.phoneNumber.substring(1)
+  console.log('callWhats', number)
+  window.open('https://api.whatsapp.com/send?phone=' +  number, '_system')
+}
+
 const volunteer = function()
 {
 
@@ -195,73 +217,87 @@ const volunteer = function()
     if ( confirm("Tem certeza?") )
     {
       is_sure.value = true;
-      alert("Um outro voluntário irá junto com você! Mas aperte o botão mais uma vez pra confirmar MESMO")
     }
     return
   }
 
-  alert('HUMMM')
+  api
+    .volunteer(uuid)
+    .then((response) =>
+    {
 
-  //api.volunteer(uuid)
+      console.log('response', response);
+
+      if ( response.data.status == 'ok' )
+      {
+        alert("Não vá sozinho! Um outro voluntário irá junto com você! Aguarde confirmação")
+        router.push('/home')
+      }
+      else
+      {
+        alert('Alguém já se voluntariou para ajudar. Muto Obrigado!')
+        router.push('/home')
+      }
+
+   })
+  .catch((error) =>
+  {
+    console.error('error', error);
+    alert('Erro ao se voluntariar. Tente novamente mais tarde.')
+  });
+
 
 }
-
 </script>
 
 <style scoped>
+h1 {
+  font-size: 1.5em;
+  padding: 0px 1em 1em;
+  margin-bottom: 1em;
+  border-bottom: 2px solid rgb(0, 183, 255);
+}
 
-  h1
-  {
-    font-size: 1.8em;
-    padding: 0px 1em;
-    margin-bottom: 1em;
-  }
+.pedido {
+  padding: 1.5em;
+  border-radius: 8px;
+  margin-bottom: 1em;
+}
 
-  .pedido
-  {
-    padding: 1.5em;
-    border-radius: 8px;
-    margin-bottom: 1em;
-  } 
+h2 {
+  text-transform: capitalize;
+}
 
-  h2
-  {
-    text-transform:capitalize;
-  }
+#basicInfo {
+  margin-top: -5px;
+  margin-bottom: 32px;
+}
 
-  #basicInfo
-  {
-    margin-top: -5px;
-    margin-bottom: 32px;
-  }
+#helpText {
+  margin-top: 32px;
+  font-size: 2.2em;
+  text-transform: uppercase;
+  line-height: 1em;
+  font-weight: bold;
+  color: rgb(0, 183, 255);
+}
 
-  #helpText
-  {
-    margin-top: 64px;
-    text-transform: uppercase;
-  }
+h3 {
+  margin: 64px 0px 16px;
+}
 
-  h3
-  {
-    margin: 64px 0px 16px;
-  }
+p {
+  margin-bottom: 1em;
+}
 
-  p
-  {
-    margin-bottom: 1em;
-  }
+#buttons {
+  display: flex;
+  gap: 32px;
+  justify-content: space-around;
+  margin: 48px 0px;
+}
 
-  #buttons
-  {
-    display: flex;
-    gap: 32px;
-    justify-content: space-around;
-    margin: 48px 0px;
-  }
-
-  #volunteerBtn
-  {
-    margin-top: 72px;
-  }
-
+#volunteerBtn {
+  margin-top: 72px;
+}
 </style>

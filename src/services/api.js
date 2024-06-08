@@ -125,6 +125,12 @@ const api =
         return axios.get( path )
     },
 
+    volunteer(uuid)
+    {
+        let path = api.getPath('volunteer/'+uuid)
+        return axios.get( path )
+    }
+
 }
 
 
