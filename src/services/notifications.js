@@ -43,39 +43,23 @@ const addListeners = async () => {
       const img = "/images/logo.png";
       const notification = new Notification(payload.notification.title, { body: payload.notification.body, icon: img, data: payload.data});
 
+      let notif = {
+        title: payload.notification.title,
+        body: payload.notification.body,
+        data: payload.data
+      }
+
+      // get notifications from local storage
+      let notifications = JSON.parse(localStorage.getItem('notifications')) || [];
+      notifications.push(notif);
+      localStorage.setItem('notifications', JSON.stringify(notifications));
+
       notification.addEventListener('click', (e) => {
         // get type and uuid from payload
         let data = e.target.data
 
-        if ( data.type == 'help-request' )
-        {
-          console.log('Help request notification clicked:', data.uuid);
-          router.push('/i-want-to-help/' + data.uuid);
-          return 
-        }
-
-        if ( data.type == 'help-on-the-way' )
-        {
-          console.log('Help on the way notification clicked:', data.uuid);
-          router.push('/help-request/' + data.uuid);
-          return
-        }
-
-        if ( data.type == 'meet-your-partner' )
-        {
-          console.log('Meet your partner notification clicked:', data.uuid);
-          router.push('/meet-your-partner/' + data.uuid);
-          return
-        }
-
-        if ( data.type == 'help-arrived' )
-        {
-          console.log('Help arrived notification clicked:', data.uuid);
-          router.push('/help-arrived/' + data.uuid);
-          return
-        }
-
-        
+        let route = mapTypeToRoute(data.type);
+        router.push({ path: route, params: { uuid: data.uuid } }); 
 
       })
 
@@ -162,4 +146,30 @@ const getFCMToken = async () => {
 
 }
 
-export { addListeners, registerNotifications, getDeliveredNotifications };
+const mapTypeToRoute = (type) => {
+  let route = '/';
+
+  switch (type) {
+    case 'help-request':
+      route = '/i-want-to-help/';
+      break;
+    case 'help-on-the-way':
+      route = '/help-request/';
+      break;
+    case 'meet-your-partner':
+      route = '/meet-your-partner/';
+      break;
+    case 'help-arrived':
+      route = '/help-arrived/';
+      break;
+    default:
+      route = '/';
+  }
+
+  return route;
+}
+
+export { 
+  addListeners, registerNotifications, getDeliveredNotifications, 
+  getFCMToken, mapTypeToRoute 
+};

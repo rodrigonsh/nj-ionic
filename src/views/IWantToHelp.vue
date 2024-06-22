@@ -226,12 +226,12 @@ const volunteer = function()
     .then((response) =>
     {
 
-      console.log('response', response);
+      //console.log('response', response);
 
       if ( response.data.status == 'ok' )
       {
-        alert("Não vá sozinho! Um outro voluntário irá junto com você! Aguarde confirmação para vocês 2 combinarem o melhor horário.")
-        router.push('/home')
+        alert('Obrigado por se voluntariar!')
+        router.push('/wait-for-partner')
       }
       else
       {

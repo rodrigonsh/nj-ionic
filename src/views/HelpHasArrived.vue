@@ -1,7 +1,7 @@
 <template>
   <ion-page>
     <ion-content :fullscreen="true" class="ion-padding">
-      <h1>Conheça seu parceiro!</h1>
+      <h1>Sua ajuda chegou!</h1>
 
       <div v-if="loading">Carregando dados...</div>
 
