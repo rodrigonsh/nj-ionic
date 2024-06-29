@@ -26,6 +26,17 @@ messaging.onBackgroundMessage((payload) => {
     '[firebase-messaging-sw.js] Received background message ',
     payload
   );
+
+
+  self.clients.matchAll().then(clients => {
+    clients.forEach(client => {
+      client.postMessage({
+        msg: 'received-notification',
+        payload: payload.notification
+      });
+    });
+  }
+
   // Customize notification here
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
@@ -33,6 +44,52 @@ messaging.onBackgroundMessage((payload) => {
     icon: '/img/logo.png',
     data: payload.data
   };
+
+  // my friend, can you sketch how to save this notification to indexedDB?
+  // https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB
+
+
+  const DBOpenRequest = self.indexedDB.open('notifications', 1);
+
+  DBOpenRequest.onerror = function (event) {
+    console.log('Error loading database.', event.target.errorCode);
+  };
+
+  DBOpenRequest.onsuccess = function (event) {
+    console.log('Database initialized.');
+
+    // store the result of opening the database in the db variable. This is used a lot below
+    db = event.target.result;
+
+    // Open a transaction to the database
+    db.transaction(['notifications'], 'readwrite').objectStore('notifications').add({
+      title: notificationTitle,
+      body: notificationOptions.body,
+      data: notificationOptions.data,
+      timestamp: Date.now()
+    });
+
+    console.log('Notification saved to indexedDB.');
+    
+  }
+
+  DBOpenRequest.onupgradeneeded = function (event) {
+    console.log('Database initialized.');
+
+    // store the result of opening the database in the db variable. This is used a lot below
+    db = event.target.result;
+
+    // Create an objectStore for this database
+    var objectStore = db.createObjectStore('notifications', { keyPath: 'id', autoIncrement: true });
+
+    // define what data items the objectStore will contain
+    objectStore.createIndex('title', 'title', { unique: false });
+    objectStore.createIndex('body', 'body', { unique: false });
+    objectStore.createIndex('data', 'data', { unique: false });
+    objectStore.createIndex('timestamp', 'timestamp', { unique: false });
+
+    console.log('Database initialized.');
+  }
 
   self.addEventListener('notificationclick', (event) => {
 

@@ -37,11 +37,55 @@ const addListeners = async () => {
     console.log('configurando onMessage...')
 
     onMessage(messaging, (payload) => {
-    
+
       console.log('Message received. ', payload);
-    
+
+      // Se a aplicação estiver em primeiro plano, salve a notificação no IndexedDB
+      if (!document.hidden) 
+      {
+        let DBOpenRequest = window.indexedDB.open('notifications', 1);
+
+        DBOpenRequest.onerror = function (event) {
+          console.log('Error loading database.', event.target.errorCode);
+        };
+
+        DBOpenRequest.onsuccess = function (event) {
+          console.log('Database initialized.');
+
+          // store the result of opening the database in the db variable. This is used a lot below
+          let db = event.target.result;
+
+          // Open a transaction to the database
+          db.transaction(['notifications'], 'readwrite').objectStore('notifications').add({
+            title: payload.notification.title,
+            body: payload.notification.body,
+            data: payload.data,
+            timestamp: Date.now()
+          });
+        };
+
+        DBOpenRequest.onupgradeneeded = function (event) {
+          console.log('Database initialized.');
+      
+          // store the result of opening the database in the db variable. This is used a lot below
+          let db = event.target.result;
+      
+          // Create an objectStore for this database
+          var objectStore = db.createObjectStore('notifications', { keyPath: 'id', autoIncrement: true });
+      
+          // define what data items the objectStore will contain
+          objectStore.createIndex('title', 'title', { unique: false });
+          objectStore.createIndex('body', 'body', { unique: false });
+          objectStore.createIndex('data', 'data', { unique: false });
+          objectStore.createIndex('timestamp', 'timestamp', { unique: false });
+      
+          console.log('Database initialized.');
+        }
+
+      }
+
       const img = "/images/logo.png";
-      const notification = new Notification(payload.notification.title, { body: payload.notification.body, icon: img, data: payload.data});
+      const notification = new Notification(payload.notification.title, { body: payload.notification.body, icon: img, data: payload.data });
 
       let notif = {
         title: payload.notification.title,
@@ -59,7 +103,7 @@ const addListeners = async () => {
         let data = e.target.data
 
         let route = mapTypeToRoute(data.type);
-        router.push({ path: route, params: { uuid: data.uuid } }); 
+        router.push({ path: route, params: { uuid: data.uuid } });
 
       })
 
@@ -169,7 +213,7 @@ const mapTypeToRoute = (type) => {
   return route;
 }
 
-export { 
-  addListeners, registerNotifications, getDeliveredNotifications, 
-  getFCMToken, mapTypeToRoute 
+export {
+  addListeners, registerNotifications, getDeliveredNotifications,
+  getFCMToken, mapTypeToRoute
 };
