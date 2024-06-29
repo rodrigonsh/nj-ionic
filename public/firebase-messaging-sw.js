@@ -84,10 +84,10 @@ messaging.onBackgroundMessage((payload) => {
 
   self.addEventListener('notificationclick', (event) => {
 
-    //console.log('sw notificationClick', event)
+    console.log('sw notificationClick', event)
 
     const clickedNotification = event.notification;
-    clickedNotification.close();
+    clickedNotification.close();    
 
     event.waitUntil(
       clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (clientList) {
@@ -95,7 +95,7 @@ messaging.onBackgroundMessage((payload) => {
         let url = "/"
 
         if (clickedNotification.data.type == 'help-request') {
-          //console.log('Help request notification clicked:');
+          console.log('Help request notification clicked:' + clickedNotification.data);
           url = '/i-want-to-help/' + clickedNotification.data.uuid
         }
 
@@ -109,6 +109,8 @@ messaging.onBackgroundMessage((payload) => {
           url = '/meet-your-partner/' + clickedNotification.data.uuid
         }
 
+        let found = false;
+
         // Se a janela do seu aplicativo já estiver aberta, apenas foca nela
         for (let i = 0; i < clientList.length; i++) {
 
@@ -120,19 +122,24 @@ messaging.onBackgroundMessage((payload) => {
             url: url,
           })
 
-          client.focus()
-
-          return
-
+          // is not right to steal focus from the user
+          // my bad the user actually clicked the notification
+          client.focus();
 
         }
+
+        if (found) {
+          return;
+        }
+
         // Se não, abre uma nova janela
-        if (clients.openWindow) {
+        if ( clients.openWindow) {
           return clients.openWindow(url);
         }
       })
     );
 
+    
 
   });
 

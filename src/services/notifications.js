@@ -10,7 +10,40 @@ import router from '@/router';
 
 const addListeners = async () => {
 
+  document.addEventListener('click', () => {
+    Notification.requestPermission().then(permission => {
+      console.log('Notification permission:', permission);
+      if (permission !== 'granted') {
+        
+        //console.log('Notification permission denied');
+        // yep.. this one is not joining the party
+        // kk you so funny
+        // TODO: redirect user to a very mean message saying that he/she needs to enable notifications
 
+      }
+    });
+  });
+
+// make sure innodb has been created
+let DBOpenRequest = window.indexedDB.open('notifications', 1);
+
+DBOpenRequest.onupgradeneeded = function (event) {
+  console.log('Database initialized.');
+
+  // store the result of opening the database in the db variable. This is used a lot below
+  let db = event.target.result;
+
+  // Create an objectStore for this database
+  var objectStore = db.createObjectStore('notifications', { keyPath: 'id', autoIncrement: true });
+
+  // define what data items the objectStore will contain
+  objectStore.createIndex('title', 'title', { unique: false });
+  objectStore.createIndex('body', 'body', { unique: false });
+  objectStore.createIndex('data', 'data', { unique: false });
+  objectStore.createIndex('timestamp', 'timestamp', { unique: false });
+
+  console.log('Database initialized.');
+}
 
   if (Capacitor.isNative) {
 
@@ -38,35 +71,7 @@ const addListeners = async () => {
 
     onMessage(messaging, (payload) => {
 
-      // ask for permission
-      Notification.requestPermission().then(permission => {
-        console.log('Notification permission:', permission);
-        if (permission === 'granted') {
-          console.log('Notification permission granted');
-        }
-        else {
-          console.log('Notification permission denied');
-          // ask for permission again
-
-          // on some navigators, the permission is denied by default
-          // and can only be asked after a user gesture
-
-          document.addEventListener('click', () => {
-            Notification.requestPermission().then(permission => {
-              console.log('Notification permission:', permission);
-              if (permission === 'granted') {
-                console.log('Notification permission granted');
-              }
-              else {
-                console.log('Notification permission denied');
-              }
-            });
-          });
-
-        }
-      });
-
-      console.log('Message received. ', payload);
+      console.log('CLI Message received. ', payload);
 
       // Se a aplicação estiver em primeiro plano, salve a notificação no IndexedDB
       if (!document.hidden) {
@@ -113,17 +118,6 @@ const addListeners = async () => {
 
       const img = "/images/logo.png";
       const notification = new Notification(payload.notification.title, { body: payload.notification.body, icon: img, data: payload.data });
-
-      let notif = {
-        title: payload.notification.title,
-        body: payload.notification.body,
-        data: payload.data
-      }
-
-      // get notifications from local storage
-      let notifications = JSON.parse(localStorage.getItem('notifications')) || [];
-      notifications.push(notif);
-      localStorage.setItem('notifications', JSON.stringify(notifications));
 
       notification.addEventListener('click', (e) => {
         // get type and uuid from payload

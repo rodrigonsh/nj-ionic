@@ -61,6 +61,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/more-info-please',
     component: () => import ('../views/MoreInfoPlease.vue')
   },
+
+  // wait for helpers
+  {
+    path: '/wait-for-helpers',
+    component: () => import ('../views/WaitForHelpers.vue')
+  },
   
   // Home
   {

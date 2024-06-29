@@ -36,6 +36,8 @@
 import store from '@/services/store';
 import api from '@/services/api';
 
+import router from '@/router';
+
 import { ref } from 'vue';
 
 const state = store.state;
@@ -68,8 +70,13 @@ const setConfession = (value) => {
 
 const prosseguir = () => {
   console.log('prosseguir', store );
-  setTimeout(api.requestHelp, 2000)
-  //api.requestHelp();
+
+  api.requestHelp()
+    .then(() => {
+      console.log('requestHelp', store );
+      router.push('/wait-for-helpers');
+    })
+  
 }
 
 console.log('MoreInfoPlease', store );

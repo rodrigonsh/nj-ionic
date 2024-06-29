@@ -15,8 +15,11 @@
           class="ion-margin">
           <ion-card-header>
             <ion-card-title>{{ notificacao.title }}</ion-card-title>
-            <ion-card-subtitle>{{ notificacao.body }}</ion-card-subtitle>
+            <ion-card-subtitle>{{ getFormattedDate(notificacao.timestamp) }}</ion-card-subtitle>
           </ion-card-header>
+          <ion-card-content>
+          {{ notificacao.body }}
+          </ion-card-content>
         </ion-card>
 
         <div v-if="notificacoes.length == 0">
@@ -90,6 +93,12 @@ const notificationClicked = (n) =>
   let route = mapTypeToRoute(n.data.type);
   router.push(route + '' + n.data.uuid);
 
+}
+
+const getFormattedDate = (timestamp) =>
+{
+  let date = new Date(timestamp);
+  return date.toLocaleString();
 }
 
 </script>

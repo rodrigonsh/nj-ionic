@@ -1,16 +1,21 @@
 <template>
   <ion-page>
     <ion-content :fullscreen="true" class="ion-padding">
-      <h1>Não vá sozinho!</h1>
+      <h1>Pedido recebido!</h1>
 
-      <p>Aguarde enquanto aguardamos mais um voluntário para te acompanhar.</p>
-      <p>Assim que encontrarmos alguém, vocês poderão combinar o melhor horário.</p>
+      <div class="pedido">
 
-      <p>&nbsp</p>
-      <p>&nbsp</p>
+        <p>Seu pedido foi recebido!</p>
+        <p>Estamos procurando voluntários para te ajudar.</p>
+        <p>Em breve você receberá uma notificação com o status do seu pedido.</p>
 
-      <IonButton routerLink="/doors" expand="block" color="primary">Voltar para o Início</IonButton>
-      
+        <p>&nbsp</p>
+        <p>&nbsp</p>
+
+        <IonButton routerLink="/doors" expand="block" color="primary">Voltar para o Início</IonButton>
+
+      </div>
+       
     </ion-content>
   </ion-page>
 </template>
@@ -20,7 +25,7 @@
 import store from '@/services/store';
 import api from '@/services/api';
 import router from '@/router';
-import { useRoute } from 'vue-router'
+import { RouterLink } from 'vue-router'
 
 import
 {
@@ -40,10 +45,6 @@ import
   IonItem,
 } from '@ionic/vue';
 
-import { call, callOutline, logoWhatsapp, handLeftOutline } from 'ionicons/icons';
-
-import { ref, computed } from 'vue';
-
 </script>
 
 <style scoped>
@@ -53,9 +54,11 @@ h1 {
   margin-bottom: 1em;
   border-bottom: 2px solid rgb(0, 183, 255);
 }
- p
-  {
-    padding: 0px 1em;
-    margin-bottom: 1em;
-  }
+
+.pedido {
+  padding: 1.5em;
+  border-radius: 8px;
+  margin-bottom: 1em;
+}
+
 </style>
