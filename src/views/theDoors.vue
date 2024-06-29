@@ -12,8 +12,8 @@
     </ion-header>
 
     <ion-content :fullscreen="true">
-      <swiper id="walls">
-        <swiper-slide class="wall">
+      <swiper id="walls" :pagination='true' :loop="true" :modules="modules">
+        <swiper-slide class="wall" >
           <ion-card
             @click="openDoor('1')"
             class="door"
@@ -119,6 +119,7 @@
             </ion-card-header>
           </ion-card>
         </swiper-slide>
+  
       </swiper>
     </ion-content>
   </ion-page>
@@ -145,14 +146,17 @@ import {
 // notifications icon
 import { notificationsOutline } from "ionicons/icons";
 
-import { Swiper, SwiperSlide } from "swiper/vue";
+import { Swiper, SwiperSlide, } from "swiper/vue";
+import { Pagination } from "swiper/modules";
 
 import "swiper/css";
+import "swiper/css/pagination";
 import "@ionic/vue/css/ionic-swiper.css";
 
 import router from "@/router";
 import store from "@/services/store";
 import api from "@/services/api";
+import { ref } from "vue";
 
 if (store.state.backUrl != null) {
   console.log("backUrl", store.state.backUrl);
@@ -161,6 +165,8 @@ if (store.state.backUrl != null) {
     store.commit("setBackUrl", null);
   }, 1000);
 }
+
+const modules = [Pagination];
 
 const openDoor = (door: string) => {
   console.log(door);
@@ -189,6 +195,12 @@ const goToNotifications = () => {
   align-items: center;
   justify-content: center;
   gap: 32px;
+
+  /** swiper pagination variables */
+  --bullet-background: #ffffff6e;
+  --bullet-background-active: #fff;
+  --swiper-pagination-bottom: 12px;
+
 }
 
 .wall {
