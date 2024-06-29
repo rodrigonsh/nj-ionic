@@ -38,11 +38,38 @@ const addListeners = async () => {
 
     onMessage(messaging, (payload) => {
 
+      // ask for permission
+      Notification.requestPermission().then(permission => {
+        console.log('Notification permission:', permission);
+        if (permission === 'granted') {
+          console.log('Notification permission granted');
+        }
+        else {
+          console.log('Notification permission denied');
+          // ask for permission again
+
+          // on some navigators, the permission is denied by default
+          // and can only be asked after a user gesture
+
+          document.addEventListener('click', () => {
+            Notification.requestPermission().then(permission => {
+              console.log('Notification permission:', permission);
+              if (permission === 'granted') {
+                console.log('Notification permission granted');
+              }
+              else {
+                console.log('Notification permission denied');
+              }
+            });
+          });
+
+        }
+      });
+
       console.log('Message received. ', payload);
 
       // Se a aplicação estiver em primeiro plano, salve a notificação no IndexedDB
-      if (!document.hidden) 
-      {
+      if (!document.hidden) {
         let DBOpenRequest = window.indexedDB.open('notifications', 1);
 
         DBOpenRequest.onerror = function (event) {
@@ -66,19 +93,19 @@ const addListeners = async () => {
 
         DBOpenRequest.onupgradeneeded = function (event) {
           console.log('Database initialized.');
-      
+
           // store the result of opening the database in the db variable. This is used a lot below
           let db = event.target.result;
-      
+
           // Create an objectStore for this database
           var objectStore = db.createObjectStore('notifications', { keyPath: 'id', autoIncrement: true });
-      
+
           // define what data items the objectStore will contain
           objectStore.createIndex('title', 'title', { unique: false });
           objectStore.createIndex('body', 'body', { unique: false });
           objectStore.createIndex('data', 'data', { unique: false });
           objectStore.createIndex('timestamp', 'timestamp', { unique: false });
-      
+
           console.log('Database initialized.');
         }
 

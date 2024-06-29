@@ -28,15 +28,6 @@ messaging.onBackgroundMessage((payload) => {
   );
 
 
-  self.clients.matchAll().then(clients => {
-    clients.forEach(client => {
-      client.postMessage({
-        msg: 'received-notification',
-        payload: payload.notification
-      });
-    });
-  }
-
   // Customize notification here
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
