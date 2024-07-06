@@ -1,6 +1,9 @@
 <template>
   <ion-app>
-      <ion-router-outlet id="main-content"></ion-router-outlet>
+    <ion-split-pane content-id="main">
+      <menu-lateral></menu-lateral>
+      <ion-router-outlet id="main"></ion-router-outlet>
+    </ion-split-pane> 
   </ion-app>
 </template>
 
@@ -36,6 +39,8 @@ import {
   warningOutline,
   warningSharp,
 } from 'ionicons/icons';
+
+import MenuLateral from '@/components/MenuLateral.vue';
 
 const selectedIndex = ref(0);
 const appPages = [
@@ -85,6 +90,11 @@ if (path !== undefined) {
 </script>
 
 <style scoped>
+
+ion-menu {
+  --side-max-width: 300px;
+}
+
 ion-menu ion-content {
   --background: var(--ion-item-background, var(--ion-background-color, #fff));
 }

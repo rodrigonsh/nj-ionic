@@ -101,6 +101,7 @@ const unsub = onAuthStateChanged(auth, (user) => {
         }
         else 
         {
+          store.commit('setUser', res.data.user)
           api.setBearer(res.data.token)
           router.replace('/doors')
         }

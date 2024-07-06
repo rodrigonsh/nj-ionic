@@ -1,7 +1,11 @@
 <template>
+
   <ion-page>
     <ion-header>
       <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
         <ion-title>Nova Jerusalém</ion-title>
         <ion-buttons slot="end">
           <ion-button @click="goToNotifications()">
@@ -152,6 +156,8 @@ import { Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "@ionic/vue/css/ionic-swiper.css";
+
+import MenuLateral from "@/components/MenuLateral.vue";
 
 import router from "@/router";
 import store from "@/services/store";

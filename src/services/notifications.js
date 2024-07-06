@@ -10,7 +10,7 @@ import router from '@/router';
 
 const addListeners = async () => {
 
-  document.addEventListener('click', () => {
+  /*document.addEventListener('click', () => {
     Notification.requestPermission().then(permission => {
       console.log('Notification permission:', permission);
       if (permission !== 'granted') {
@@ -22,7 +22,7 @@ const addListeners = async () => {
 
       }
     });
-  });
+  });*/
 
 // make sure innodb has been created
 let DBOpenRequest = window.indexedDB.open('notifications', 1);
