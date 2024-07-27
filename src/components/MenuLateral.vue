@@ -1,11 +1,11 @@
 <template>
 
-<ion-menu id="menu" contentId="main-content" ref="menuRef" >
+<ion-menu id="menu" :contentId="props.content" ref="menuRef" >
 <ion-content>
 
     <img src="/images/logo.png" style="width: 175px; margin: 32px auto; display: block;" />
 
-    <div id="avatarAndUsername" @click="goto('/perfil')">
+    <div id="avatarAndUsername" @click="goto('/login/address')">
                
         <ion-avatar id="avatar">
             <img :src="avatarURL" />
@@ -25,6 +25,11 @@
         <ion-label>Início</ion-label>
     </ion-item>
 
+    <ion-item @click="goto('/notifications')" :detail="true">
+        <ion-icon :icon="notificationsOutline" slot="start"></ion-icon>
+        <ion-label>Notificações</ion-label>
+    </ion-item>
+
     <ion-item @click="goto('/settings')" :detail="true">
         <ion-icon :icon="settings" slot="start"></ion-icon>
         <ion-label>Configurações</ion-label>
@@ -32,7 +37,7 @@
 
     <ion-item @click="goto('/ajuda')" :detail="true">
         <ion-icon :icon="helpCircleOutline" slot="start"></ion-icon>
-        <ion-label>Precisa de Ajuda?</ion-label>
+        <ion-label>Não entendi esse app</ion-label>
     </ion-item>
 
     <ion-item @click="logout()">
@@ -122,6 +127,7 @@ import
     trophyOutline,
     prismOutline,
 airplane,
+notificationsOutline,
 } from 'ionicons/icons';
 
 import api from '@/services/api'
@@ -131,6 +137,10 @@ import { menuController } from '@ionic/vue'
 
 const router = useIonRouter();
 
+// use props
+const props = defineProps({
+    content: String
+})
 
 const userName = computed( () =>
 {
