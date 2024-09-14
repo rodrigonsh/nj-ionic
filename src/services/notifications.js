@@ -96,24 +96,6 @@ DBOpenRequest.onupgradeneeded = function (event) {
           });
         };
 
-        DBOpenRequest.onupgradeneeded = function (event) {
-          console.log('Database initialized.');
-
-          // store the result of opening the database in the db variable. This is used a lot below
-          let db = event.target.result;
-
-          // Create an objectStore for this database
-          var objectStore = db.createObjectStore('notifications', { keyPath: 'id', autoIncrement: true });
-
-          // define what data items the objectStore will contain
-          objectStore.createIndex('title', 'title', { unique: false });
-          objectStore.createIndex('body', 'body', { unique: false });
-          objectStore.createIndex('data', 'data', { unique: false });
-          objectStore.createIndex('timestamp', 'timestamp', { unique: false });
-
-          console.log('Database initialized.');
-        }
-
       }
 
       const img = "/images/logo.png";
@@ -123,8 +105,8 @@ DBOpenRequest.onupgradeneeded = function (event) {
         // get type and uuid from payload
         let data = e.target.data
 
-        let route = mapTypeToRoute(data.type);
-        router.push({ path: route, params: { uuid: data.uuid } });
+        let name = data.type;
+        router.push({ name: name, params: { uuid: data.uuid } });
 
       })
 
@@ -211,30 +193,8 @@ const getFCMToken = async () => {
 
 }
 
-const mapTypeToRoute = (type) => {
-  let route = '/';
-
-  switch (type) {
-    case 'help-request':
-      route = '/i-want-to-help/';
-      break;
-    case 'help-on-the-way':
-      route = '/help-request/';
-      break;
-    case 'meet-your-partner':
-      route = '/meet-your-partner/';
-      break;
-    case 'help-arrived':
-      route = '/help-arrived/';
-      break;
-    default:
-      route = '/';
-  }
-
-  return route;
-}
 
 export {
   addListeners, registerNotifications, getDeliveredNotifications,
-  getFCMToken, mapTypeToRoute
+  getFCMToken
 };

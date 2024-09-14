@@ -45,9 +45,19 @@
 
         </div>
 
-        <ion-button @click="continuar" size="large" expand="full">
-          Continuar
-        </ion-button>
+        <ion-row>
+          <ion-col>
+            <ion-button fill="clear"  @click="resetar" size="large" expand="full">
+              Resetar
+            </ion-button>
+          </ion-col>
+          <ion-col>
+            <ion-button @click="continuar" size="large" expand="full">
+              Continuar
+            </ion-button>
+          </ion-col>
+        </ion-row>
+        
 
 
       </div>
@@ -56,7 +66,12 @@
   </ion-page>
 </template>
 
-<style>
+<style scoped>
+
+  h1
+  {
+    margin-bottom: 32px;
+  }
 
   .familyBtn
   {
@@ -66,6 +81,11 @@
     padding: 16px;
     margin-bottom: 8px;
     align-items: center;
+  }
+
+  ion-row
+  {
+    margin-top: 32px;
   }
   
 </style>
@@ -99,7 +119,13 @@ import { storeKey } from 'vuex';
 
 const state = store.state;
 
-const members = ref({});
+let fsizeStr = "{}"
+if ( 'familySize' in state.user )
+{
+  fsizeStr = state.user.familySize;
+}
+
+const members = ref(JSON.parse(fsizeStr));
 
 const getCount = (age) =>
 {
@@ -130,6 +156,11 @@ const addMember = (ev) =>
   members.value[age][gender]++
 
   console.log(members.value);
+}
+
+const resetar = () =>
+{
+  members.value = {};
 }
 
 const continuar = () =>

@@ -115,7 +115,7 @@ const is_sure = ref(false)
 console.log('uuid', uuid);
 
 // set backUrl
-store.commit('setBackUrl', '/help-request/' + uuid);
+store.commit('setBackUrl', '/i-want-to-help/' + uuid)
 
 // use api to get the help request
 // getHelpRequest/uuid
@@ -133,6 +133,8 @@ api.getHelpRequest(uuid)
     }
 
     reqData.value = data;
+
+    //
 
   })
   .catch((error) => {

@@ -76,30 +76,42 @@ const routes: Array<RouteRecordRaw> = [
 
   // i-want-to-help/uuid
   {
+    name: 'i-want-to-help',
     path: '/i-want-to-help/:uuid',
     component: () => import ('../views/IWantToHelp.vue')
   },
 
   // help request
   {
+    name: 'help-request',
     path: '/help-request/:uuid',
     component: () => import ('../views/HelpRequest.vue')
   },
 
   // wait for partner
   {
+    name: 'wait-for-partner',
     path: '/wait-for-partner/',
     component: () => import ('../views/WaitForPartner.vue')
   },
 
   // meet your partner
   {
+    name: 'meet-your-partner',
     path: '/meet-your-partner/:uuid',
     component: () => import ('../views/MeetYourPartner.vue')
   },
 
+  // help on the way
+  {
+    name: 'help-on-the-way',
+    path: '/help-on-the-way/:uuid',
+    component: () => import ('../views/HelpOnTheWay.vue')
+  },
+
   // help has arrived
   {
+    name: 'help-has-arrived',
     path: '/help-has-arrived/:uuid',
     component: () => import ('../views/HelpHasArrived.vue')
   },

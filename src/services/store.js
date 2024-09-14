@@ -56,6 +56,9 @@ const store = createStore({
       // merge com o que já tem
       // pra pegar as coordenadas
       state.user = { ...state.user, ...payload }
+
+      console.log('state user', state.user)
+
     },
 
     setFamilySize(state, payload) {
@@ -64,7 +67,12 @@ const store = createStore({
 
     setBackUrl(state, payload) {
       state.backUrl = payload
-    }
+    },
+
+    setPhotoURL(state, payload) {
+      state.user.photoURL = '/'+payload
+      console.log('setting photo url', state.user.photoURL)   
+    },
 
   },
 

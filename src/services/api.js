@@ -67,12 +67,11 @@ const api =
     {
         let path = api.getPath('updatePhoto')
         let fd = new FormData();
+        fd.append('_token', this.token)
         fd.append('_userToken', this.userToken)
         fd.append('image', image)
 
-        return axios.post( path , fd, {
-            withCredentials: true
-        })
+        return axios.post( path , fd )
     },
 
     sendChat(msg)

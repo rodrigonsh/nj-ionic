@@ -82,8 +82,11 @@ store.commit('setBackUrl', '/meet-your-partner/' + uuid);
 api.getHelpRequest(uuid)
   .then((response) => {
 
-    let data = response.data.data;
+    console.log('response', response.data);
+    let data = response.data;
     reqData.value = data;
+
+    loading.value = false;
 
   })
   .catch((error) => {

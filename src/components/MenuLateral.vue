@@ -5,13 +5,16 @@
 
     <img src="/images/logo.png" style="width: 175px; margin: 32px auto; display: block;" />
 
-    <div id="avatarAndUsername" @click="goto('/login/address')">
+    <div id="avatarAndUsername">
                
-        <ion-avatar id="avatar">
+        <label for="avatar">
+        <ion-avatar >
             <img :src="avatarURL" />
         </ion-avatar>
+        <input type="file" id="avatar" @change="uploadAvatar" style="display: none;" />
+        </label>
 
-        <div id="username">
+        <div id="username" @click="goto('/login/address')">
             {{ userName }}
             <small>Editar perfil</small>
         </div>
@@ -132,6 +135,7 @@ notificationsOutline,
 
 import api from '@/services/api'
 import store from '@/services/store'
+import { auth } from '@/firebase/config'
 
 import { menuController } from '@ionic/vue'
 
@@ -152,7 +156,14 @@ const userName = computed( () =>
 const avatarURL = computed( () =>
 {
 
-    return '/images/profile.png'
+    if (store == undefined) return '/images/profile.png'
+    
+    if (store.state == undefined) return '/images/profile.png'
+    if (store.state.user == undefined) return '/images/profile.png'
+
+    
+    if (store.state.user.photoURL != null) return 'http://localhost/'+store.state.user.photoURL
+    else return 'waa'
 })
 
 
@@ -166,8 +177,23 @@ const goto = function(path)
 const logout = function()
 {
     menuController.close()
-    //router.replace('/login-bango')
-    //auth.signOut()
+    router.replace('/login-bango')
+    auth.signOut()
+}
+
+const uploadAvatar = function(ev)
+{
+    console.log('uploadAvatar', ev)
+    let file = ev.target.files[0];
+    api.updatePhoto(file)
+        .then( (ret) => 
+        {
+            // update avatar
+            store.commit('setPhotoURL', ret.data)
+
+        })
+        .catch( (err) => { console.log(err); } )
+
 }
 
 </script>

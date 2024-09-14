@@ -35,10 +35,21 @@
           <ion-input 
             :required="true" 
             :readonly="'cep' in state.user" 
-            v-model="state.user.localidade" 
+            v-model="state.user.uf" 
             placeholder="UF"
             label="UF"
             maxlength="2"
+            labelPlacement="floating"></ion-input>
+          </ion-item>      
+
+
+          <ion-item>
+          <ion-input 
+            :required="true" 
+            :readonly="'cep' in state.user" 
+            v-model="state.user.localidade" 
+            placeholder="UF"
+            label="Cidade"
             labelPlacement="floating"></ion-input>
           </ion-item>      
           
@@ -137,8 +148,8 @@ IonButton,
 IonIcon,
 IonInput,
 IonItem,
-IonList,
-
+IonRow,
+IonCol,
 
 } from '@ionic/vue';
 
@@ -149,7 +160,7 @@ import CoordenadasDoCep from "@/services/cep";
 import api from "@/services/api";
 
 const state = store.state
-const masked = ref("");
+const masked = ref(state.user.cep ?? "");
 const loading = ref(false);
 
 const checkCode = async function (ev) {
@@ -158,6 +169,9 @@ const checkCode = async function (ev) {
 
   // exit if event is not keyup
   if ( ! ( "key" in ev ) ) return
+
+  // ignore if tab
+  if ( ev.key === "Tab" ) return
 
   console.log(masked.value, masked.value.length)
 
@@ -182,6 +196,8 @@ const checkCode = async function (ev) {
       .catch(err => {
         //retorna o mesmo parâmetro 'err' da versão em promise
         console.error(err)
+        alert('CEP não encontrado')
+        loading.value = false
       })
 
   }
